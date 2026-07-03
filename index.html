@@ -421,12 +421,11 @@
   function applyStatus(data) {
     lastStatus = data;
 
-    if (!data.success) {
-      setBanner(data.message || 'No number exists.', 'blocked');
-      setSubmitState(false, mode === 'checkin' ? 'Check In' : 'Check Out');
-      return;
-    }
-
+if (!data.success) {
+  setBanner(data.message || 'Student ID not exist.', 'blocked');
+  setSubmitState(false, 'Student Not Found');
+  return;
+}
     // Server-side time window / holiday gate takes priority over anything else.
     if (data.windowBlocked) {
       setBanner(data.windowMessage, 'blocked');
