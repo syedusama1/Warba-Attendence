@@ -24,7 +24,7 @@
     align-items: center;
     flex-shrink: 0;
   }
-  .logo-card img {
+  .logo-card img, .logo-card svg {
     display: block;
     height: 34px;
     width: auto;
@@ -175,7 +175,18 @@
 
   <div class="topbar">
     <div class="logo-card">
-      <img src="data:image/png;base64,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" alt="Warba Insurance & Reinsurance">
+      <!--
+        Lightweight placeholder logo (a few lines of SVG instead of a
+        huge base64 PNG blob). Swap this for the real logo by replacing
+        this <svg> block with either:
+          1) <img src="https://your-hosted-logo-url.png" alt="Warba Insurance & Reinsurance">
+          2) A new, size-optimized base64 string
+      -->
+      <svg width="120" height="34" viewBox="0 0 120 34" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="4" width="26" height="26" rx="5" fill="#0b2d52"/>
+        <path d="M6 22 L11 10 L14 18 L17 8 L20 22" stroke="#cfa445" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="32" y="23" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#0b2d52">WARBA</text>
+      </svg>
     </div>
     <div>
       <div class="topbar-sub">ATTENDANCE MANAGEMENT SYSTEM</div>
@@ -211,13 +222,12 @@
 
           <label for="mobile">Mobile Number</label>
           <input type="text" id="mobile" name="mobile" placeholder="8-digit number, e.g. 12345678" maxlength="8" inputmode="numeric" pattern="[0-9]{8}" autocomplete="off" oninput="sanitizeAndCheck(this)">
-          <div class="field-hint">Enter your 8-digit mobile number only (no +965).</div>
+          <div class="field-hint">Enter your 8-digit mobile number only.</div>
 
           <div id="statusBanner" class="status-banner"></div>
 
           <div id="checkoutFields" style="display:none;">
-            <label for="feedback">Feedback</label>
-            <textarea id="feedback" name="feedback" placeholder="How was today's session?"></textarea>
+            <textarea id="feedback" name="feedback" placeholder="How was today's session?" style="margin-top:16px;"></textarea>
             <label for="videoFile">Upload Photos / Videos (optional, up to 25MB total)</label>
             <input type="file" id="videoFile" accept="image/*,video/*" multiple onchange="onFileChosen(this)">
             <div id="fileChosenLabel" style="display:none; margin-top:8px; font-size:13px; color:#15803d; font-weight:600;"></div>
@@ -479,10 +489,11 @@
 
   // ------------------------------------------------------------
   // Checkout: each selected file is read client-side and converted to
-  // base64, then placed into indexed hidden TEXT fields (fileData0,
-  // fileData1, ...) before the form submits. Apps Script reads these
-  // by index on the backend. Native multipart file-blob fields proved
-  // unreliable, but plain text fields work reliably, hence this approach.
+  // base64 in parallel, then placed into indexed hidden TEXT fields
+  // (fileData0, fileData1, ...) before the form submits. Apps Script
+  // reads these by index on the backend. Native multipart file-blob
+  // fields proved unreliable, but plain text fields work reliably,
+  // hence this approach.
   // ------------------------------------------------------------
   function readFileAsBase64(file) {
     return new Promise((resolve, reject) => {
@@ -531,9 +542,13 @@
     }
 
     try {
+      setSubmitState(false, 'Reading files...');
       const form = document.getElementById('attendanceForm');
-      for (let i = 0; i < files.length; i++) {
-        const base64 = await readFileAsBase64(files[i]);
+
+      // Read all files in parallel instead of one-by-one.
+      const encoded = await Promise.all(files.map(f => readFileAsBase64(f)));
+
+      encoded.forEach((base64, i) => {
         [
           ['fileData' + i, base64],
           ['fileName' + i, files[i].name],
@@ -546,7 +561,9 @@
           field.value = value;
           form.appendChild(field);
         });
-      }
+      });
+
+      setSubmitState(false, 'Uploading ' + files.length + ' file(s)...');
       form.submit();
       pollForResult(requestId, 0);
     } catch (err) {
@@ -558,7 +575,7 @@
   }
 
   function pollForResult(requestId, attempt) {
-    const maxAttempts = 20; // ~30 seconds
+    const maxAttempts = 30; // ~45 seconds - Drive uploads with multiple files legitimately take time
     if (attempt >= maxAttempts) {
       setSubmitState(true, 'Check Out');
       const msgBox = document.getElementById('msg');
@@ -568,11 +585,16 @@
       return;
     }
 
+    if (attempt > 0 && attempt % 4 === 0) {
+      setSubmitState(false, 'Still uploading...');
+    }
+
     const cb = 'cbpoll_' + Date.now() + '_' + attempt;
     jsonp(APPS_SCRIPT_URL + '?mode=pollResult&requestId=' + encodeURIComponent(requestId), cb)
       .then((data) => {
         if (data.pending) {
-          setTimeout(() => pollForResult(requestId, attempt + 1), 1500);
+          const delay = attempt < 5 ? 900 : 1500; // check faster right after submit, then ease off
+          setTimeout(() => pollForResult(requestId, attempt + 1), delay);
         } else {
           showResult(data);
         }
