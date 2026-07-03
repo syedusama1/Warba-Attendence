@@ -5,170 +5,579 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Warba Attendance System</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-  body { background: #f3f4f6; min-height: 100vh; }
-  .topbar { background: #0b2d52; padding: 14px 28px; display: flex; align-items: center; gap: 16px; }
-  .topbar-sub { color: #cfa445; font-size: 12px; font-weight: 600; letter-spacing: 0.6px; }
-  .content { display: flex; flex-direction: column; align-items: center; padding: 36px 20px 20px; }
-  .toggle { display: flex; background: #e5e7eb; border-radius: 24px; padding: 4px; margin-bottom: 26px; }
-  .toggle button { border: none; background: transparent; padding: 9px 22px; border-radius: 20px; font-size: 13px; font-weight: 700; cursor: pointer; color: #6b7280; transition: all 0.15s ease; }
-  .toggle button.active.checkin { background: #dcfce7; color: #15803d; }
-  .toggle button.active.checkout { background: #fee2e2; color: #b91c1c; }
-  .card { background: #fff; border-radius: 16px; max-width: 420px; width: 100%; padding: 36px 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
-  h1 { font-size: 20px; color: #0b2d52; margin-bottom: 4px; }
-  .subtitle { color: #6b7280; font-size: 14px; margin-bottom: 22px; }
-  .time-row { background: #f3f4f6; border-radius: 10px; padding: 12px 14px; font-size: 13px; color: #6b7280; margin-bottom: 22px; }
-  .time-row strong { color: #0b2d52; }
-  label { display: block; font-size: 13px; font-weight: 600; color: #374151; margin: 16px 0 6px; }
-  input[type="text"], textarea { width: 100%; padding: 12px 14px; border: 1px solid #d1d5db; border-radius: 10px; font-size: 15px; outline: none; }
-  input:focus, textarea:focus { border-color: #0b2d52; }
-  .status-banner { margin-top: 16px; padding: 12px 14px; border-radius: 10px; font-size: 13px; display: none; }
-  .status-banner.ok { background: #dcfce7; color: #15803d; display: block; }
-  .status-banner.blocked { background: #fee2e2; color: #b91c1c; display: block; }
-  .status-banner.checking { background: #f3f4f6; color: #6b7280; display: block; }
-  button.submit { width: 100%; margin-top: 22px; padding: 14px; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; color: #fff; cursor: pointer; }
-  button.submit.checkin { background: #15803d; }
-  button.submit.checkout { background: #b91c1c; }
-  button.submit:disabled { opacity: 0.5; cursor: not-allowed; }
-  .msg { margin-top: 18px; padding: 14px; border-radius: 10px; font-size: 14px; text-align: center; display: none; }
-  .msg.error { background: #fee2e2; color: #b91c1c; display: block; }
-  .result { display: none; text-align: center; }
-  .result.show { display: block; }
-  .result .icon { width: 64px; height: 64px; border-radius: 50%; background: #dcfce7; color: #15803d; font-size: 30px; display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; }
-  .result.error .icon { background: #fee2e2; color: #b91c1c; }
-  .result .name { font-size: 20px; font-weight: 700; color: #15803d; margin-bottom: 4px; }
-  .result.error .name { color: #b91c1c; }
-  .again { background: #0b2d52; color: #fff; border: none; padding: 12px 22px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; }
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+  body { background: #f3f4f6; min-height: 100vh; }
+
+  .topbar {
+    background: #0b2d52;
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .logo-card {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .logo-card img {
+    display: block;
+    height: 34px;
+    width: auto;
+  }
+  .topbar-title { color: #fff; font-size: 19px; font-weight: 700; }
+  .topbar-sub { color: #cfa445; font-size: 12px; font-weight: 600; letter-spacing: 0.6px; }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 36px 20px 20px;
+  }
+
+  .toggle {
+    display: flex;
+    background: #e5e7eb;
+    border-radius: 24px;
+    padding: 4px;
+    margin-bottom: 26px;
+  }
+  .toggle button {
+    border: none;
+    background: transparent;
+    padding: 9px 22px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    cursor: pointer;
+    color: #6b7280;
+    transition: all 0.15s ease;
+  }
+  .toggle button.active.checkin { background: #dcfce7; color: #15803d; }
+  .toggle button.active.checkout { background: #fee2e2; color: #b91c1c; }
+
+  .card {
+    background: #fff;
+    border-radius: 16px;
+    max-width: 420px;
+    width: 100%;
+    padding: 36px 28px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  }
+
+  h1 { font-size: 20px; color: #0b2d52; margin-bottom: 4px; }
+  .subtitle { color: #6b7280; font-size: 14px; margin-bottom: 22px; }
+
+  .time-row {
+    background: #f3f4f6;
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 22px;
+  }
+  .time-row strong { color: #0b2d52; }
+
+  label { display: block; font-size: 13px; font-weight: 600; color: #374151; margin: 16px 0 6px; }
+  label:first-of-type { margin-top: 0; }
+  input[type="text"], textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    font-size: 15px;
+    outline: none;
+  }
+  input:focus, textarea:focus { border-color: #0b2d52; }
+  textarea { min-height: 90px; resize: vertical; }
+
+  input[type="file"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px dashed #d1d5db;
+    border-radius: 10px;
+    font-size: 13px;
+    background: #f9fafb;
+  }
+
+  .status-banner {
+    margin-top: 16px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    display: none;
+  }
+  .status-banner.ok { background: #dcfce7; color: #15803d; display: block; }
+  .status-banner.blocked { background: #fee2e2; color: #b91c1c; display: block; }
+  .status-banner.checking { background: #f3f4f6; color: #6b7280; display: block; }
+
+  button.submit {
+    width: 100%;
+    margin-top: 22px;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+  }
+  button.submit.checkin { background: #15803d; }
+  button.submit.checkout { background: #b91c1c; }
+  button.submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .msg {
+    margin-top: 18px;
+    padding: 14px;
+    border-radius: 10px;
+    font-size: 14px;
+    text-align: center;
+    display: none;
+  }
+  .msg.success { background: #dcfce7; color: #15803d; display: block; }
+  .msg.error { background: #fee2e2; color: #b91c1c; display: block; }
+
+  /* success confirmation state */
+  .result { display: none; text-align: center; }
+  .result.show { display: block; }
+  .result .icon {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: #dcfce7; color: #15803d;
+    font-size: 30px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 18px;
+  }
+  .result.error .icon { background: #fee2e2; color: #b91c1c; }
+  .result .name { font-size: 20px; font-weight: 700; color: #15803d; margin-bottom: 4px; }
+  .result.error .name { color: #b91c1c; }
+  .result .timestamp { font-size: 13px; color: #6b7280; margin-bottom: 18px; }
+  .result .headline { font-size: 18px; font-weight: 700; color: #0b2d52; margin-bottom: 8px; }
+  .result .detail { font-size: 14px; color: #6b7280; margin-bottom: 24px; }
+  .result .again { background: #0b2d52; color: #fff; border: none; padding: 12px 22px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; }
+
+  .footer { text-align: center; margin-top: 24px; font-size: 11px; color: #9ca3af; }
+  .footer .site { color: #0b2d52; font-weight: 600; margin-bottom: 4px; }
+  .footer .credit { color: #cfa445; font-weight: 600; margin-top: 4px; }
 </style>
 </head>
 <body>
-  <div class="topbar"><div class="topbar-sub">ATTENDANCE MANAGEMENT SYSTEM</div></div>
-  <div class="content">
-    <div class="toggle">
-      <button id="tabCheckin" class="active checkin" onclick="setMode('checkin')" type="button">CHECK-IN</button>
-      <button id="tabCheckout" class="checkout" onclick="setMode('checkout')" type="button">CHECK-OUT</button>
-    </div>
-    <div class="card">
-      <div id="formView">
-        <h1 id="formTitle">Student Check-In</h1>
-        <p class="subtitle" id="formSubtitle">Enter your registered mobile number.</p>
-        <div class="time-row">Current Time: <strong id="clock"></strong></div>
-        <form id="attendanceForm" target="hiddenUploadFrame" method="POST" enctype="multipart/form-data" onsubmit="return false;">
-          <input type="hidden" name="mode" id="formMode" value="checkin">
-          <input type="hidden" name="requestId" id="formRequestId" value="">
-          <label for="mobile">Mobile Number</label>
-          <input type="text" id="mobile" name="mobile" placeholder="+965XXXXXXXX" oninput="onMobileChanged()">
-          <div id="statusBanner" class="status-banner"></div>
-          <div id="checkoutFields" style="display:none;">
-            <label for="feedback">Feedback</label>
-            <textarea id="feedback" name="feedback"></textarea>
-            <label for="videoFile">Upload Photos (optional)</label>
-            <input type="file" id="videoFile" accept="image/*,video/*" multiple>
-          </div>
-          <button id="submitBtn" type="button" class="submit checkin" onclick="submitForm()" disabled>Enter mobile number</button>
-          <div id="msg" class="msg"></div>
-        </form>
-      </div>
-      <div id="resultView" class="result">
-        <div class="icon" id="resultIcon">&#10003;</div>
-        <div class="name" id="resultName"></div>
-        <div id="resultHeadline" style="font-weight:700; color:#0b2d52; margin-bottom:8px;"></div>
-        <div id="resultDetail" style="font-size:14px; color:#6b7280; margin-bottom:24px;"></div>
-        <button class="again" onclick="resetView()" type="button">Done</button>
-      </div>
-    </div>
-  </div>
-  <iframe name="hiddenUploadFrame" style="display:none;"></iframe>
+
+  <div class="topbar">
+    
+    <div>
+      <div class="topbar-sub">ATTENDANCE MANAGEMENT SYSTEM</div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="toggle">
+      <button id="tabCheckin" class="active checkin" onclick="setMode('checkin')" type="button">CHECK-IN</button>
+      <button id="tabCheckout" class="checkout" onclick="setMode('checkout')" type="button">CHECK-OUT</button>
+    </div>
+
+    <div class="card">
+
+      <div id="formView">
+        <h1 id="formTitle">Student Check-In</h1>
+        <p class="subtitle" id="formSubtitle">Enter your registered mobile number to record your attendance.</p>
+
+        <div class="time-row">
+          Current Time: <strong id="clock"></strong>
+        </div>
+
+        <!--
+          This is a REAL form. For check-in we never call its native submit
+          (we read field values manually and fire a JSONP GET instead).
+          For check-out, we call form.submit() directly so the file input
+          travels as genuine multipart/form-data into the hidden iframe,
+          with zero copying/relocation of the file element itself.
+        -->
+        <form id="attendanceForm" target="hiddenUploadFrame" method="POST" enctype="multipart/form-data" onsubmit="return false;">
+          <input type="hidden" name="mode" id="formMode" value="checkin">
+          <input type="hidden" name="requestId" id="formRequestId" value="">
+
+          <label for="mobile">Mobile Number</label>
+          <input type="text" id="mobile" name="mobile" placeholder="+965XXXXXXXX" oninput="onMobileChanged()">
+
+          <div id="statusBanner" class="status-banner"></div>
+
+          <div id="checkoutFields" style="display:none;">
+            <label for="feedback">Feedback</label>
+            <textarea id="feedback" name="feedback" placeholder="How was today's session?"></textarea>
+            <label for="videoFile">Upload Photos / Videos (optional, up to 25MB total)</label>
+            <input type="file" id="videoFile" accept="image/*,video/*" multiple onchange="onFileChosen(this)">
+            <div id="fileChosenLabel" style="display:none; margin-top:8px; font-size:13px; color:#15803d; font-weight:600;"></div>
+          </div>
+
+          <button id="submitBtn" type="button" class="submit checkin" onclick="submitForm()" disabled>Enter mobile number</button>
+          <div id="msg" class="msg"></div>
+        </form>
+      </div>
+
+      <div id="resultView" class="result">
+        <div class="icon" id="resultIcon">&#10003;</div>
+        <div class="name" id="resultName"></div>
+        <div class="timestamp" id="resultTimestamp"></div>
+        <div class="headline" id="resultHeadline"></div>
+        <div class="detail" id="resultDetail"></div>
+        <button class="again" onclick="resetView()" type="button">Done</button>
+      </div>
+
+    </div>
+
+    <div class="footer">
+      <div class="site">warba.insure</div>
+      <div>Warba Insurance and Reinsurance Company — Kuwait</div>
+      <div class="credit">Developed by: Syed Usama Najeeb — Digital Transformation Specialist</div>
+    </div>
+  </div>
+
+  <!-- Hidden iframe target: real form submissions here are not subject to CORS at all -->
+  <iframe name="hiddenUploadFrame" style="display:none;"></iframe>
 
 <script>
-  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwOQWers9KekqFKAPjiBDu1eNHyAK5S1s58w8nnf1jrzXMS3PuvXq5ofv8BFyzZS58hFA/exec';
-  let mode = 'checkin';
-  let statusDebounce = null;
-  let lastStatus = null;
+  // ============================================================
+  // Live Apps Script deployment URL
+  // ============================================================
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwOQWers9KekqFKAPjiBDu1eNHyAK5S1s58w8nnf1jrzXMS3PuvXq5ofv8BFyzZS58hFA/exec';
 
-  function updateClock() { document.getElementById('clock').textContent = new Date().toLocaleTimeString('en-GB'); }
-  setInterval(updateClock, 1000);
+  let mode = 'checkin';
+  let statusDebounce = null;
+  let lastStatus = null; // cached result of the most recent status check
 
-  function setMode(newMode) {
-    mode = newMode;
-    document.getElementById('formMode').value = mode;
-    document.getElementById('tabCheckin').classList.toggle('active', mode === 'checkin');
-    document.getElementById('tabCheckout').classList.toggle('active', mode === 'checkout');
-    document.getElementById('checkoutFields').style.display = (mode === 'checkout') ? 'block' : 'none';
-    document.getElementById('submitBtn').className = 'submit ' + mode;
-    resetView();
-    onMobileChanged();
-  }
+  document.getElementById('attendanceForm').action = APPS_SCRIPT_URL;
 
-  function setBanner(text, kind) {
-    const banner = document.getElementById('statusBanner');
-    if (!text) { banner.style.display = 'none'; return; }
-    banner.textContent = text; banner.className = 'status-banner ' + kind;
-  }
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('mode') === 'checkout') mode = 'checkout';
 
-  function setSubmitState(enabled, label) {
-    const btn = document.getElementById('submitBtn');
-    btn.disabled = !enabled; btn.textContent = label;
-  }
+  function updateClock() {
+    const now = new Date();
+    const opts = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+    document.getElementById('clock').textContent = now.toLocaleString('en-GB', opts).replace(',', ',');
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
 
-  // DEBOUNCED FUNCTION: Prevents lag by waiting 600ms
-  function onMobileChanged() {
-    const mobile = document.getElementById('mobile').value.trim();
-    clearTimeout(statusDebounce);
-    if (mobile.length < 4) { setBanner('', ''); setSubmitState(false, 'Enter mobile number'); return; }
-    
-    setBanner('Checking status...', 'checking');
-    statusDebounce = setTimeout(() => {
-      const cb = 'cb_' + Date.now();
-      jsonp(APPS_SCRIPT_URL + '?mode=status&mobile=' + encodeURIComponent(mobile), cb)
-        .then(applyStatus);
-    }, 600);
-  }
+  function setMode(newMode) {
+    mode = newMode;
+    document.getElementById('formMode').value = mode;
+    document.getElementById('tabCheckin').classList.toggle('active', mode === 'checkin');
+    document.getElementById('tabCheckout').classList.toggle('active', mode === 'checkout');
 
-  function applyStatus(data) {
-    lastStatus = data;
-    if (!data.success) { setBanner(data.message, 'blocked'); setSubmitState(false, 'Invalid'); return; }
-    if (data.windowBlocked) { setBanner(data.windowMessage, 'blocked'); setSubmitState(false, 'Not Available'); return; }
-    
-    const canSubmit = (mode === 'checkin') ? (data.state === 'not_checked_in') : (data.state === 'checked_in');
-    setBanner(canSubmit ? '' : (mode === 'checkin' ? 'Already checked in' : 'Must check in first'), canSubmit ? '' : 'blocked');
-    setSubmitState(canSubmit, mode === 'checkin' ? 'Check In' : 'Check Out');
-  }
+    const isCheckout = mode === 'checkout';
+    document.getElementById('formTitle').textContent = isCheckout ? 'Student Check-Out' : 'Student Check-In';
+    document.getElementById('formSubtitle').textContent = isCheckout
+      ? 'Enter your mobile number, leave feedback, and check out.'
+      : 'Enter your registered mobile number to record your attendance.';
+    document.getElementById('checkoutFields').style.display = isCheckout ? 'block' : 'none';
 
-  function jsonp(url, callbackName) {
-    return new Promise((resolve) => {
-      const script = document.createElement('script');
-      window[callbackName] = (data) => { resolve(data); script.remove(); };
-      script.src = url + '&callback=' + callbackName;
-      document.body.appendChild(script);
-    });
-  }
+    const btn = document.getElementById('submitBtn');
+    btn.className = 'submit ' + (isCheckout ? 'checkout' : 'checkin');
 
-  function submitForm() {
-    if (mode === 'checkin') {
-      const cb = 'cb_' + Date.now();
-      jsonp(APPS_SCRIPT_URL + '?mode=checkin&mobile=' + encodeURIComponent(document.getElementById('mobile').value), cb)
-        .then(showResult);
-    } else {
-      document.getElementById('attendanceForm').submit();
-      // Logic for checkout continues via your existing poll mechanism
-    }
-  }
+    resetView();
+    // Re-evaluate gating for the newly selected tab using whatever mobile number is already typed.
+    onMobileChanged();
+  }
 
-  function showResult(data) {
-    document.getElementById('formView').style.display = 'none';
-    const resultView = document.getElementById('resultView');
-    resultView.classList.add('show');
-    document.getElementById('resultName').textContent = data.name;
-    document.getElementById('resultHeadline').textContent = data.success ? 'Success' : 'Error';
-    document.getElementById('resultDetail').textContent = data.message;
-  }
+  function resetView() {
+    document.getElementById('formView').style.display = 'block';
+    document.getElementById('resultView').classList.remove('show');
+    document.getElementById('msg').style.display = 'none';
+    document.getElementById('mobile').value = '';
+    if (document.getElementById('feedback')) document.getElementById('feedback').value = '';
+    if (document.getElementById('videoFile')) document.getElementById('videoFile').value = '';
+    if (document.getElementById('fileChosenLabel')) { document.getElementById('fileChosenLabel').style.display = 'none'; document.getElementById('fileChosenLabel').textContent = ''; }
+    clearDynamicFileFields();
+    lastStatus = null;
+    setBanner('', '');
+    setSubmitState(false, 'Enter mobile number');
+  }
 
-  function resetView() {
-    document.getElementById('formView').style.display = 'block';
-    document.getElementById('resultView').classList.remove('show');
-  }
+  const MAX_TOTAL_UPLOAD_BYTES = 25 * 1024 * 1024; // 25MB raw - must match Code.gs exactly
+
+  function onFileChosen(input) {
+    const label = document.getElementById('fileChosenLabel');
+    const files = input.files ? Array.from(input.files) : [];
+    if (files.length === 0) {
+      label.style.display = 'none';
+      label.textContent = '';
+      return;
+    }
+    const totalBytes = files.reduce((sum, f) => sum + f.size, 0);
+    const totalMB = (totalBytes / (1024 * 1024)).toFixed(2);
+    if (totalBytes > MAX_TOTAL_UPLOAD_BYTES) {
+      label.style.color = '#b91c1c';
+      label.textContent = '✗ ' + files.length + ' file(s), ' + totalMB + ' MB total — exceeds the 25MB limit. Please select fewer/smaller files.';
+    } else {
+      label.style.color = '#15803d';
+      label.textContent = '✓ Selected: ' + files.length + ' file(s), ' + totalMB + ' MB total';
+    }
+    label.style.display = 'block';
+  }
+
+  function setBanner(text, kind) {
+    const banner = document.getElementById('statusBanner');
+    if (!text) {
+      banner.style.display = 'none';
+      banner.className = 'status-banner';
+      return;
+    }
+    banner.textContent = text;
+    banner.className = 'status-banner ' + kind;
+  }
+
+  function setSubmitState(enabled, label) {
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = !enabled;
+    btn.textContent = label;
+  }
+
+  function jsonp(url, callbackName) {
+    return new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      window[callbackName] = (data) => {
+        resolve(data);
+        delete window[callbackName];
+        script.remove();
+      };
+      script.onerror = () => reject(new Error('Could not reach the server. Check your internet connection.'));
+      script.src = url + (url.includes('?') ? '&' : '?') + 'callback=' + callbackName;
+      document.body.appendChild(script);
+    });
+  }
+
+  // ------------------------------------------------------------
+  // Live gating: as soon as a mobile number is entered, ask the
+  // server what state that student is actually in, and disable
+  // the submit button outright if the action isn't allowed yet.
+  // ------------------------------------------------------------
+  function onMobileChanged() {
+    const mobile = document.getElementById('mobile').value.trim();
+    clearTimeout(statusDebounce);
+
+    if (!mobile) {
+      lastStatus = null;
+      setBanner('', '');
+      setSubmitState(false, 'Enter mobile number');
+      return;
+    }
+
+    setBanner('Checking your status...', 'checking');
+    setSubmitState(false, 'Checking...');
+
+    statusDebounce = setTimeout(() => {
+      const cb = 'cbstatus_' + Date.now();
+      jsonp(APPS_SCRIPT_URL + '?mode=status&mobile=' + encodeURIComponent(mobile), cb)
+        .then(applyStatus)
+        .catch((err) => {
+          setBanner(err.message, 'blocked');
+          setSubmitState(false, mode === 'checkin' ? 'Check In' : 'Check Out');
+        });
+    }, 500);
+  }
+
+  function applyStatus(data) {
+    lastStatus = data;
+
+    if (!data.success) {
+      setBanner(data.message || 'Mobile number not found.', 'blocked');
+      setSubmitState(false, mode === 'checkin' ? 'Check In' : 'Check Out');
+      return;
+    }
+
+    // Server-side time window / holiday gate takes priority over anything else.
+    if (data.windowBlocked) {
+      setBanner(data.windowMessage, 'blocked');
+      setSubmitState(false, 'Not Available Now');
+      return;
+    }
+
+    const state = data.state; // 'checked_in' (has an open check-in) or 'not_checked_in'
+
+    if (mode === 'checkin') {
+      if (state === 'checked_in') {
+        setBanner('You are already checked in. Please check out before checking in again.', 'blocked');
+        setSubmitState(false, 'Already Checked In');
+      } else {
+        setBanner('', '');
+        setSubmitState(true, 'Check In');
+      }
+    } else {
+      if (state === 'not_checked_in') {
+        setBanner('You need to check in first before you can check out.', 'blocked');
+        setSubmitState(false, 'Check In Required');
+      } else {
+        setBanner('You are checked in. You can check out below.', 'ok');
+        setSubmitState(true, 'Check Out');
+      }
+    }
+  }
+
+  function submitForm() {
+    const mobile = document.getElementById('mobile').value.trim();
+    const msgBox = document.getElementById('msg');
+
+    if (!mobile) {
+      msgBox.className = 'msg error';
+      msgBox.textContent = 'Please enter your mobile number.';
+      msgBox.style.display = 'block';
+      return;
+    }
+
+    // Final server-side-backed guard: never submit unless the last status
+    // check actually cleared this action.
+    if (mode === 'checkin' && (!lastStatus || !lastStatus.success || lastStatus.state !== 'not_checked_in')) return;
+    if (mode === 'checkout' && (!lastStatus || !lastStatus.success || lastStatus.state !== 'checked_in')) return;
+
+    msgBox.style.display = 'none';
+    setSubmitState(false, 'Please wait...');
+
+    if (mode === 'checkin') {
+      const cb = 'cb_' + Date.now();
+      jsonp(APPS_SCRIPT_URL + '?mode=checkin&mobile=' + encodeURIComponent(mobile), cb)
+        .then((data) => { showResult(data); })
+        .catch((err) => {
+          setSubmitState(true, 'Check In');
+          msgBox.className = 'msg error';
+          msgBox.textContent = err.message;
+          msgBox.style.display = 'block';
+        });
+    } else {
+      submitCheckoutWithUpload();
+    }
+  }
+
+  // ------------------------------------------------------------
+  // Checkout: each selected file is read client-side and converted to
+  // base64, then placed into indexed hidden TEXT fields (fileData0,
+  // fileData1, ...) before the form submits. Apps Script reads these
+  // by index on the backend. Native multipart file-blob fields proved
+  // unreliable, but plain text fields work reliably, hence this approach.
+  // ------------------------------------------------------------
+  function readFileAsBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result.split(',')[1] || '');
+      reader.onerror = () => reject(new Error('Could not read "' + file.name + '". Please try again.'));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function clearDynamicFileFields() {
+    document.querySelectorAll('.dynamic-file-field').forEach(el => el.remove());
+  }
+
+  async function submitCheckoutWithUpload() {
+    const requestId = 'req_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+    document.getElementById('formRequestId').value = requestId;
+    document.getElementById('formMode').value = 'checkout';
+    clearDynamicFileFields();
+
+    const fileInput = document.getElementById('videoFile');
+    const files = fileInput.files ? Array.from(fileInput.files) : [];
+    const msgBox = document.getElementById('msg');
+
+    if (files.length === 0) {
+      document.getElementById('attendanceForm').submit();
+      pollForResult(requestId, 0);
+      return;
+    }
+
+    if (files.length > 10) {
+      setSubmitState(true, 'Check Out');
+      msgBox.className = 'msg error';
+      msgBox.textContent = 'Please select at most 10 files.';
+      msgBox.style.display = 'block';
+      return;
+    }
+
+    const totalBytes = files.reduce((sum, f) => sum + f.size, 0);
+    if (totalBytes > MAX_TOTAL_UPLOAD_BYTES) {
+      setSubmitState(true, 'Check Out');
+      msgBox.className = 'msg error';
+      msgBox.textContent = 'Combined file size is too large (max 25MB total). Please choose fewer or smaller files.';
+      msgBox.style.display = 'block';
+      return;
+    }
+
+    try {
+      const form = document.getElementById('attendanceForm');
+      for (let i = 0; i < files.length; i++) {
+        const base64 = await readFileAsBase64(files[i]);
+        [
+          ['fileData' + i, base64],
+          ['fileName' + i, files[i].name],
+          ['fileType' + i, files[i].type || 'application/octet-stream']
+        ].forEach(([name, value]) => {
+          const field = document.createElement('input');
+          field.type = 'hidden';
+          field.name = name;
+          field.className = 'dynamic-file-field';
+          field.value = value;
+          form.appendChild(field);
+        });
+      }
+      form.submit();
+      pollForResult(requestId, 0);
+    } catch (err) {
+      setSubmitState(true, 'Check Out');
+      msgBox.className = 'msg error';
+      msgBox.textContent = err.message;
+      msgBox.style.display = 'block';
+    }
+  }
+
+  function pollForResult(requestId, attempt) {
+    const maxAttempts = 20; // ~30 seconds
+    if (attempt >= maxAttempts) {
+      setSubmitState(true, 'Check Out');
+      const msgBox = document.getElementById('msg');
+      msgBox.className = 'msg error';
+      msgBox.textContent = 'Upload is taking longer than expected. Please wait a moment and try again.';
+      msgBox.style.display = 'block';
+      return;
+    }
+
+    const cb = 'cbpoll_' + Date.now() + '_' + attempt;
+    jsonp(APPS_SCRIPT_URL + '?mode=pollResult&requestId=' + encodeURIComponent(requestId), cb)
+      .then((data) => {
+        if (data.pending) {
+          setTimeout(() => pollForResult(requestId, attempt + 1), 1500);
+        } else {
+          showResult(data);
+        }
+      })
+      .catch(() => {
+        setTimeout(() => pollForResult(requestId, attempt + 1), 1500);
+      });
+  }
+
+  function showResult(data) {
+    document.getElementById('formView').style.display = 'none';
+    const resultView = document.getElementById('resultView');
+    resultView.classList.add('show');
+    resultView.classList.toggle('error', !data.success);
+
+    document.getElementById('resultIcon').innerHTML = data.success ? '&#10003;' : '&#10007;';
+    document.getElementById('resultName').textContent = data.name || (data.success ? '' : 'Not Found');
+
+    const now = new Date();
+    const opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+    document.getElementById('resultTimestamp').textContent = now.toLocaleString('en-GB', opts);
+
+    document.getElementById('resultHeadline').textContent = data.success
+      ? (mode === 'checkin' ? 'Checked In Successfully' : 'Checked Out Successfully')
+      : 'Something Went Wrong';
+    document.getElementById('resultDetail').textContent = data.message;
+  }
+
+  // Initial state on page load
+  setSubmitState(false, 'Enter mobile number');
 </script>
 </body>
 </html>
