@@ -393,11 +393,11 @@
     }
 
     // Server-side time window / holiday gate takes priority over anything else.
-    if (data.windowBlocked) {
-      setBanner(data.windowMessage, 'blocked');
-      setSubmitState(false, 'Not Available Now');
-      return;
-    }
+   // if (data.windowBlocked) {
+     // setBanner(data.windowMessage, 'blocked');
+      //setSubmitState(false, 'Not Available Now');
+      //return;
+    //}
 
     const state = data.state; // 'checked_in' (has an open check-in) or 'not_checked_in'
 
