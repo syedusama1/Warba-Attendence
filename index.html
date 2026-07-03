@@ -455,38 +455,50 @@ if (!data.success) {
   }
 
   function submitForm() {
-    const mobile = document.getElementById('mobile').value.trim();
-    const msgBox = document.getElementById('msg');
+  const mobile = document.getElementById('mobile').value.trim();
+  const msgBox = document.getElementById('msg');
+  const fileInput = document.getElementById('videoFile');
+  const files = fileInput.files ? Array.from(fileInput.files) : [];
 
-    if (mobile.length !== 8) {
-      msgBox.className = 'msg error';
-      msgBox.textContent = 'Please enter a valid 8-digit mobile number.';
-      msgBox.style.display = 'block';
-      return;
-    }
-
-    // Final server-side-backed guard: never submit unless the last status
-    // check actually cleared this action.
-    if (mode === 'checkin' && (!lastStatus || !lastStatus.success || lastStatus.state !== 'not_checked_in')) return;
-    if (mode === 'checkout' && (!lastStatus || !lastStatus.success || lastStatus.state !== 'checked_in')) return;
-
-    msgBox.style.display = 'none';
-    setSubmitState(false, 'Please wait...');
-
-    if (mode === 'checkin') {
-      const cb = 'cb_' + Date.now();
-      jsonp(APPS_SCRIPT_URL + '?mode=checkin&mobile=' + encodeURIComponent(mobile), cb)
-        .then((data) => { showResult(data); })
-        .catch((err) => {
-          setSubmitState(true, 'Check In');
-          msgBox.className = 'msg error';
-          msgBox.textContent = err.message;
-          msgBox.style.display = 'block';
-        });
-    } else {
-      submitCheckoutWithUpload();
-    }
+  if (mobile.length !== 8) {
+    msgBox.className = 'msg error';
+    msgBox.textContent = 'Please enter a valid 8-digit mobile number.';
+    msgBox.style.display = 'block';
+    return;
   }
+
+  // Final server-side-backed guard: never submit unless the last status
+  // check actually cleared this action.
+  if (mode === 'checkin' && (!lastStatus || !lastStatus.success || lastStatus.state !== 'not_checked_in')) return;
+  if (mode === 'checkout' && (!lastStatus || !lastStatus.success || lastStatus.state !== 'checked_in')) return;
+
+  msgBox.style.display = 'none';
+  setSubmitState(false, 'Please wait...');
+
+  // OPTIMIZATION: 
+  // If mode is 'checkin' OR 'checkout' with NO files, use the fast JSONP path.
+  // Only use the slow multipart/iframe path if files are actually present.
+  if (mode === 'checkin' || (mode === 'checkout' && files.length === 0)) {
+    const feedback = document.getElementById('feedback') ? document.getElementById('feedback').value : '';
+    const url = APPS_SCRIPT_URL + '?mode=' + mode + 
+                '&mobile=' + encodeURIComponent(mobile) + 
+                '&feedback=' + encodeURIComponent(feedback);
+    
+    const cb = 'cb_' + Date.now();
+    
+    jsonp(url, cb)
+      .then((data) => { showResult(data); })
+      .catch((err) => {
+        setSubmitState(true, mode === 'checkin' ? 'Check In' : 'Check Out');
+        msgBox.className = 'msg error';
+        msgBox.textContent = err.message;
+        msgBox.style.display = 'block';
+      });
+  } else {
+    // Files exist, proceed with the robust iframe upload
+    submitCheckoutWithUpload();
+  }
+}
 
   // ------------------------------------------------------------
   // Checkout: each selected file is read client-side and converted to
